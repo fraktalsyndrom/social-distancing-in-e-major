@@ -54,7 +54,7 @@ public class MusicTrack implements Runnable
 
 	public String toString()
 	{
-		String output = "MusicTrack, name: " + name + ", duration: " + duration + "s";
+		String output = "MusicTrack, name: " + name + ", duration: " + duration + "s" + ", playing: " + isPlaying;
 		return output;
 	}
 

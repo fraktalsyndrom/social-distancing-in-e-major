@@ -1,6 +1,7 @@
 package com.sdiem;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,8 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 public class SdiemPlayer
 {
-    private static final int MINIMUM_INTERVAL_SECONDS = 10;
-    private static final int MAXIMUM_INTERVAL_SECONDS = 30;
+    private static final int MINIMUM_INTERVAL_SECONDS = 60;
+    private static final int MAXIMUM_INTERVAL_SECONDS = 120;
+    private static final String TRACKLIST_PATH = "tracklist.csv";
+    private static final String TRACK_FOLDER_PATH = "media";
 
     List<MusicTrack> trackList;
 
@@ -20,29 +23,56 @@ public class SdiemPlayer
         this.trackList = trackList;
     }
 
-    public void startPlaying() throws InterruptedException
-    {
-        for (MusicTrack track : trackList)
-        {
-            Thread trackThread = new Thread(track);
-            trackThread.start();
-            Thread.sleep(generateRandomIntervalTime());
-        }
-    }
-
     public static void main(String[] args)
     {
         try
         {
-            SdiemPlayer player = new SdiemPlayer(createTrackList("tracklist.csv"));
+            SdiemPlayer player = new SdiemPlayer(createTrackList(TRACKLIST_PATH));
             player.startPlaying();
-
-            Thread.sleep(TimeUnit.MINUTES.toMillis(2));
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+    }
+
+    public void startPlaying() throws InterruptedException
+    {
+        while(true)
+        {
+            MusicTrack nextTrack = getRandomSilentTrack();
+            if (nextTrack != null)
+            {
+                Thread trackThread = new Thread(nextTrack);
+                trackThread.start();
+            }
+            else
+            {
+                System.out.println("No tracks currently silent.");
+            }
+            int sleepTime = generateRandomTimeInterval();
+            System.out.println("Sleeping for " + sleepTime/1000 + " seconds");
+            Thread.sleep(sleepTime);
+        }
+    }
+
+    public MusicTrack getRandomSilentTrack()
+    {
+        List<MusicTrack> silentTracks = new ArrayList<>();
+        for (MusicTrack track : trackList)
+        {
+            if (!track.isPlaying())
+            {
+                silentTracks.add(track);
+            }
+        }
+
+        Random random = new Random();
+        if (silentTracks.isEmpty())
+            return null;
+
+        int randomIndex = random.nextInt(silentTracks.size());
+        return silentTracks.get(randomIndex);
     }
 
     private static List<MusicTrack> createTrackList(String trackListPath) throws IOException
@@ -60,7 +90,19 @@ public class SdiemPlayer
         return trackList;
     }
 
-    private static int generateRandomIntervalTime()
+    private static List<MusicTrack> generateTrackListFromFolder(String folderPath) throws IOException{
+        File folder = new File(folderPath);
+        List<MusicTrack> trackList = new ArrayList<>();
+        for (File file : folder.listFiles())
+        {
+            MusicTrack newTrack = new MusicTrack(file.getName(), file.getAbsolutePath());
+            System.out.println("Adding track " + newTrack + " to list.");
+        }
+
+        return trackList;
+    }
+
+    private static int generateRandomTimeInterval()
     {
         int range = MAXIMUM_INTERVAL_SECONDS - MINIMUM_INTERVAL_SECONDS;
         Random random = new Random();
