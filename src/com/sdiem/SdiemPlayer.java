@@ -24,7 +24,8 @@ public class SdiemPlayer
     {
         for (MusicTrack track : trackList)
         {
-            track.play();
+            Thread trackThread = new Thread(track);
+            trackThread.start();
             Thread.sleep(generateRandomIntervalTime());
         }
     }

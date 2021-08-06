@@ -7,7 +7,7 @@ import javax.sound.sampled.Clip;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-public class MusicTrack
+public class MusicTrack implements Runnable
 {
 	private String name;
 	private String path;
@@ -28,6 +28,8 @@ public class MusicTrack
 
 			clip = AudioSystem.getClip();
 			clip.open(inputStream);
+
+			System.out.println("Created " + this);
 		}
 		catch (Exception exception)
 		{
@@ -45,19 +47,6 @@ public class MusicTrack
 		return (int)(audioFileLength / (frameSize * frameRate)) + 1; //Rounded up
 	}
 
-	public void play()
-	{
-		System.out.println("Playing track " + name);
-		clip.loop(1);
-		isPlaying = true;
-	}
-
-	public void stop()
-	{
-		clip.stop();
-		isPlaying = false;
-	}
-
 	public boolean isPlaying()
 	{
 		return isPlaying;
@@ -65,7 +54,27 @@ public class MusicTrack
 
 	public String toString()
 	{
-		String output = "MusicTrack, name: " + name + ", duration: " + duration;
+		String output = "MusicTrack, name: " + name + ", duration: " + duration + "s";
 		return output;
+	}
+
+	@Override
+	public void run()
+	{
+		try
+		{
+			System.out.println("Playing track " + name);
+			isPlaying = true;
+			clip.loop(1);
+
+			Thread.sleep(TimeUnit.SECONDS.toMillis(duration));
+
+			clip.stop();
+			isPlaying = false;
+			System.out.println("Stopping track " + name);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
