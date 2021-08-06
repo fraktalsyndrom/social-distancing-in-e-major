@@ -5,6 +5,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public class MusicTrack
 {
@@ -13,7 +14,7 @@ public class MusicTrack
 	private boolean isPlaying;
 	private AudioInputStream inputStream;
 	private Clip clip;
-	private float duration;
+	private int duration;
 
 	public MusicTrack(String name, String path)
 	{
@@ -21,8 +22,10 @@ public class MusicTrack
 		{
 			this.name = name;
 			File file = new File(path).getAbsoluteFile();
-			duration = extractDuration(file);
 			this.inputStream  = AudioSystem.getAudioInputStream(file);
+
+			duration = extractDuration(file);
+
 			clip = AudioSystem.getClip();
 			clip.open(inputStream);
 		}
@@ -32,14 +35,14 @@ public class MusicTrack
 		}
 	}
 
-	private float extractDuration(File file)
+	private int extractDuration(File file)
 	{
 		AudioFormat format = inputStream.getFormat();
 		long audioFileLength = file.length();
 		int frameSize = format.getFrameSize();
 		float frameRate = format.getFrameRate();
 
-		return (audioFileLength / (frameSize * frameRate));
+		return (int)(audioFileLength / (frameSize * frameRate)) + 1; //Rounded up
 	}
 
 	public void play()
@@ -58,5 +61,11 @@ public class MusicTrack
 	public boolean isPlaying()
 	{
 		return isPlaying;
+	}
+
+	public String toString()
+	{
+		String output = "MusicTrack, name: " + name + ", duration: " + duration;
+		return output;
 	}
 }
