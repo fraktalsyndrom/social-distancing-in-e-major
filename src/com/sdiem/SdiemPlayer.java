@@ -13,7 +13,6 @@ public class SdiemPlayer
 {
     private static final int MINIMUM_INTERVAL_SECONDS = 10;
     private static final int MAXIMUM_INTERVAL_SECONDS = 30;
-    private static final String TRACKLIST_PATH = "tracklist.csv";
     private static final String TRACK_FOLDER_PATH = "media/wav";
 
     List<MusicTrack> trackList;
@@ -27,7 +26,6 @@ public class SdiemPlayer
     {
         try
         {
-            //SdiemPlayer player = new SdiemPlayer(createTrackList(TRACKLIST_PATH));
             SdiemPlayer player = new SdiemPlayer(generateTrackListFromFolder(TRACK_FOLDER_PATH));
             player.startPlaying();
         }
