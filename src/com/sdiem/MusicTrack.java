@@ -1,10 +1,8 @@
 package com.sdiem;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class MusicTrack implements Runnable
@@ -23,6 +21,26 @@ public class MusicTrack implements Runnable
 			this.name = name;
 			File file = new File(path).getAbsoluteFile();
 			this.inputStream  = AudioSystem.getAudioInputStream(file);
+
+			duration = extractDuration(file);
+
+			clip = AudioSystem.getClip();
+			clip.open(inputStream);
+
+			System.out.println("Created " + this);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+	}
+
+	public MusicTrack(File file)
+	{
+		try
+		{
+			this.name = file.getName();
+			this.inputStream = AudioSystem.getAudioInputStream(file);
 
 			duration = extractDuration(file);
 
@@ -72,7 +90,8 @@ public class MusicTrack implements Runnable
 			clip.stop();
 			isPlaying = false;
 			System.out.println("Stopping track " + name);
-		} catch (InterruptedException e)
+		}
+		catch (InterruptedException e)
 		{
 			e.printStackTrace();
 		}
