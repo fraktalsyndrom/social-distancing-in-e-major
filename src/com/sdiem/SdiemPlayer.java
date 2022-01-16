@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SdiemPlayer
 {
+    public static final float VOLUME_RANGE = 0.4f; // 0.0 = all tracks full volume, 1.0 = volume can vary from silent to full
     private static final int MINIMUM_INTERVAL_SECONDS = 10;
     private static final int MAXIMUM_INTERVAL_SECONDS = 30;
     private static final String TRACK_FOLDER_PATH = "media/wav";

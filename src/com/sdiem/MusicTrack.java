@@ -2,7 +2,7 @@ package com.sdiem;
 
 import javax.sound.sampled.*;
 import java.io.File;
-import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class MusicTrack implements Runnable
@@ -81,6 +81,7 @@ public class MusicTrack implements Runnable
 	{
 		try
 		{
+			setVolume(getRandomVolume());
 			System.out.println("Playing track " + name);
 			isPlaying = true;
 			clip.loop(1);
@@ -95,5 +96,24 @@ public class MusicTrack implements Runnable
 		{
 			e.printStackTrace();
 		}
+	}
+
+	private void setVolume(float volume)
+	{
+		FloatControl gainControl = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(20f * (float)Math.log10(volume));
+	}
+
+	private static float getRandomVolume()
+	{
+		Random random = new Random();
+
+		float volumeRange = SdiemPlayer.VOLUME_RANGE;
+		float volumeModifier = random.nextFloat() * volumeRange;
+		float randomVolume = 1 - volumeModifier;
+
+		System.out.println("Random volume: " + randomVolume);
+
+		return randomVolume;
 	}
 }
