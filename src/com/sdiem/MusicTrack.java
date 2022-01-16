@@ -35,26 +35,6 @@ public class MusicTrack implements Runnable
 		}
 	}
 
-	public MusicTrack(File file)
-	{
-		try
-		{
-			this.name = file.getName();
-			this.inputStream = AudioSystem.getAudioInputStream(file);
-
-			duration = extractDuration(file);
-
-			clip = AudioSystem.getClip();
-			clip.open(inputStream);
-
-			System.out.println("Created " + this);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-	}
-
 	private int extractDuration(File file)
 	{
 		AudioFormat format = inputStream.getFormat();

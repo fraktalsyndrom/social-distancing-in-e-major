@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SdiemPlayer
 {
-    public static final float VOLUME_RANGE = 0.4f; // 0.0 = all tracks full volume, 1.0 = volume can vary from silent to full
+    public static final float VOLUME_RANGE = 0.3f; // 0.0 = all tracks full volume, 1.0 = volume can vary from silent to full
     private static final int MINIMUM_INTERVAL_SECONDS = 10;
     private static final int MAXIMUM_INTERVAL_SECONDS = 30;
     private static final String TRACK_FOLDER_PATH = "media/wav";
@@ -73,21 +73,6 @@ public class SdiemPlayer
 
         int randomIndex = random.nextInt(silentTracks.size());
         return silentTracks.get(randomIndex);
-    }
-
-    private static List<MusicTrack> createTrackList(String trackListPath) throws IOException
-    {
-        BufferedReader csvReader = new BufferedReader(new FileReader(trackListPath));
-        List<MusicTrack> trackList = new ArrayList<>();
-        String row = "";
-        while ((row = csvReader.readLine()) != null)
-        {
-            String[] trackInfo = row.split(",");
-            MusicTrack newTrack = new MusicTrack(trackInfo[0], trackInfo[1]);
-            trackList.add(newTrack);
-        }
-        csvReader.close();
-        return trackList;
     }
 
     private static List<MusicTrack> generateTrackListFromFolder(String folderPath) throws IOException{
